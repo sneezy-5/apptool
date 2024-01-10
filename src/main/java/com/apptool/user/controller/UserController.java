@@ -10,30 +10,25 @@ import org.springframework.web.bind.annotation.*;
 
 import com.apptool.user.config.dto.UserDto;
 import com.apptool.user.config.dto.UserEditDto;
-import com.apptool.user.config.payload.ErrorResponse;
-import com.apptool.user.config.payload.MessageResponse;
 import com.apptool.user.model.User;
-import com.apptool.user.repository.UserRepository;
 import com.apptool.user.service.UserService;
+import com.apptool.user.utils.GetValidateionErros;
 
 import jakarta.validation.Valid;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    //  @Autowired
-    // private UserRepository userRepository;
-    
+   
     @GetMapping
-    public ResponseEntity<List<User>> showUserList(Model model) {
+    public ResponseEntity<List<User>> showUserList() {
                 List<User> userList = userService.getAllUsers();
   
         return  ResponseEntity.ok(userList);
@@ -43,7 +38,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody @Valid UserDto userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> validationErrors = getValidationErrors(bindingResult);
+            Map<String, String> validationErrors = GetValidateionErros.getValidationErrors(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationErrors);
         }
     
@@ -60,7 +55,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> updateUser(@PathVariable Long id,  @RequestBody @Valid UserEditDto userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            Map<String, String> validationErrors = getValidationErrors(bindingResult);
+            Map<String, String> validationErrors = GetValidateionErros.getValidationErrors(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationErrors);
         }
 
@@ -81,12 +76,7 @@ public class UserController {
     
     }
 
-    private Map<String, String> getValidationErrors(BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
-        bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-        return errors;
-    }
+    
 
 
    

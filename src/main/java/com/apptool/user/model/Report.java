@@ -1,8 +1,14 @@
 package com.apptool.user.model;
 
+import java.util.List;
+
+import com.apptool.user.config.dto.FileDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -32,9 +38,9 @@ public class Report {
     @Size(min = 4, max = 100)
     private String statusIndemnity;
 
-    @NotBlank
-    @Size(min = 4, max = 100)
-    private String team;
+    @NotEmpty
+    // @Size(min = 4, max = 100)
+    private List<String> team;
 
     @NotBlank
     private String content;
@@ -43,10 +49,20 @@ public class Report {
     @JoinColumn(name = "user_id")
     private User createdBy;
 
+    @Column(nullable = true, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean status;
+
+    
+    //@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+     @Transient
+    //@JsonInclude(JsonInclude.Include.NON_NULL)
+    //@JsonIgnore
+    private List<FileDto> files;
+    
     public Report() {
     }
 
-    public Report(String name, String district, String department, String region, String statusIndemnity, String team, String content, User createdBy) {
+    public Report(String name, String district, String department, String region, String statusIndemnity, List<String> team, String content, User createdBy, Boolean status) {
         this.name = name;
         this.district = district;
         this.department = department;
@@ -55,6 +71,7 @@ public class Report {
         this.team = team;
         this.content = content;
         this.createdBy = createdBy;
+        this.status = status;
     }
 
     // Getters and setters
@@ -107,11 +124,11 @@ public class Report {
         this.statusIndemnity = statusIndemnity;
     }
 
-    public String getTeam() {
+    public List<String> getTeam() {
         return team;
     }
 
-    public void setTeam(String team) {
+    public void setTeam(List<String> team) {
         this.team = team;
     }
 
@@ -130,4 +147,22 @@ public class Report {
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
+
+    public Boolean getStatus() {
+        return status;
+    }
+     public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+
+
+    public List<FileDto> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDto> files) {
+        this.files = files;
+    }
+    
 }

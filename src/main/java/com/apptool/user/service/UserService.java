@@ -21,6 +21,8 @@ import com.apptool.user.model.User;
 import com.apptool.user.repository.RoleRepository;
 import com.apptool.user.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
 
@@ -45,6 +47,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
     }
 
+    @Transactional
     public ResponseEntity<?> saveUser(UserDto userDto) {
 
         try {
@@ -104,7 +107,7 @@ public class UserService {
         }
     }
 
-
+    @Transactional
     public ResponseEntity<?> updateUser(UserEditDto userDto, Long id) {
 
               if ( userRepository.countByUsernameAndExcludeUserId(userDto.getUsername(),id) > 0) {
@@ -176,7 +179,7 @@ public class UserService {
     }
 
 
-    
+    @Transactional
     public ResponseEntity<?> deleteUser(Long id) {
 
         if(userRepository.findById(id) != null){
